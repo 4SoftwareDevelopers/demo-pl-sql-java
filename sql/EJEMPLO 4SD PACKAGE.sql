@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE PKG4SD_UT_TRABA AS
+create or replace PACKAGE PKG4SD_UT_TRABA AS
 /*==============================================================*/
 /* SISTEMA:     4SD - PACKAGE UTIL           					*/
 /* PAQUETE:     PKG4SD_UT_TRABA.sql     	                    */
@@ -7,9 +7,9 @@ CREATE OR REPLACE PACKAGE PKG4SD_UT_TRABA AS
 /* FECHA:       10/09/2019                                      */
 /*==============================================================*/
   /* Declaración de variable tipo cursor */
-  
-  Type type_cursor Is Ref Cursor Return TRABA%ROWTYPE;
-  
+
+  TYPE type_cursor IS REF CURSOR;
+
   -----------------------------------------------------------------------------
   -- Fun4SD_Exist FUNCION PARA DETERMINAR QUE EL TRAID EXISTA
   -----------------------------------------------------------------------------
@@ -18,7 +18,7 @@ CREATE OR REPLACE PACKAGE PKG4SD_UT_TRABA AS
 		pvId_Docu   IN    TRABA.TRAID%TYPE
 	)
 	Return Boolean; 
-	
+
   -----------------------------------------------------------------------------
   -- Fun4SD_GetRecord FUNCION PARA OBTENER UN CURSOR CON SUS DATOS
   -----------------------------------------------------------------------------  
@@ -26,8 +26,8 @@ CREATE OR REPLACE PACKAGE PKG4SD_UT_TRABA AS
 	(
 		pvId_Docu   IN    TRABA.TRAID%TYPE
 	)
-  Return TRABA%ROWTYPE;
-  
+  Return type_cursor;
+
 End PKG4SD_UT_TRABA;
 /
 create or replace Package Body PKG4SD_UT_TRABA As
@@ -53,7 +53,7 @@ create or replace Package Body PKG4SD_UT_TRABA As
     TRABA
   Where
     TRAID = pvId_Docu;
-	
+
   -----------------------------------------------------------------------------
   -- Fun4SD_Exist FUNCION PARA DETERMINAR QUE EL TRAID EXISTA
   -----------------------------------------------------------------------------
@@ -65,7 +65,7 @@ create or replace Package Body PKG4SD_UT_TRABA As
 	IS
 
 	Cuantos number:=0;
-	
+
 	/*Un bloque anónimo PL/SQL*/
 	BEGIN
 	 OPEN cur_TRABA_count
@@ -74,7 +74,7 @@ create or replace Package Body PKG4SD_UT_TRABA As
 		);
 		FETCH cur_TRABA_count INTO Cuantos;
      CLOSE cur_TRABA_count;
-     
+
 	 IF ( Cuantos = 0 ) THEN
         RETURN (FALSE);
      END IF;
@@ -88,11 +88,10 @@ create or replace Package Body PKG4SD_UT_TRABA As
 	(
 		pvId_Docu   IN    TRABA.TRAID%TYPE
 	)
-  Return TRABA%ROWTYPE Is
+ RETURN type_cursor IS
 
   /*VARIABLE CURSOR*/
   cur4SDCed type_cursor;
-  r4SDCed TRABA%ROWTYPE;
 
 	Begin
 
@@ -104,9 +103,7 @@ create or replace Package Body PKG4SD_UT_TRABA As
        Where
         TRAID = pvId_Docu;
 
-    Fetch cur4SDCed Into r4SDCed;
-
-    Return r4SDCed;
+    Return cur4SDCed;
 
 	End Fun4SD_GetRecord;
 
